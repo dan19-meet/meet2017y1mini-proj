@@ -212,9 +212,9 @@ def move_snake():
         SCORE += 1
 
     ## Don't eat yourself
-    for i in range(len(pos_list)):
-        if snake.pos() == pos_list[i]:
-            pass
+    for i in range(len(pos_list) - 1):
+        if pos_list[-1] == pos_list[i]:
+            quit()
     
     turtle.ontimer(move_snake, TIME_STEP)
 
