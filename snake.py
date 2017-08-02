@@ -6,12 +6,15 @@ turtle.tracer(1, 0)
 SIZE_X = 800
 SIZE_Y = 500
 
-UP_EDGE = 250
-DOWN_EDGE = -250
-RIGHT_EDGE = 400
-LEFT_EDGE = -400
+REAL_SIZE_X = SIZE_X + 60
+REAL_SIZE_Y = SIZE_Y + 60
 
-turtle.setup(SIZE_X, SIZE_Y)
+UP_EDGE = REAL_SIZE_Y / 2
+DOWN_EDGE = -(REAL_SIZE_Y / 2)
+RIGHT_EDGE = REAL_SIZE_X / 2
+LEFT_EDGE = -(REAL_SIZE_X / 2)
+
+turtle.setup(REAL_SIZE_X, REAL_SIZE_Y)
 turtle.bgcolor("black")
 
 turtle.penup()
@@ -19,6 +22,8 @@ turtle.penup()
 SQUARE_SIZE = 20
 START_LENGTH = 10
 SCORE = 0
+
+isGrow = False
 
 SPEED = 50
 
@@ -118,7 +123,7 @@ food.shape("trash.gif")
 turtle.hideturtle()
 
 def make_food():
-    global food_stamps, food_pos, food
+    global food_stamps, food_pos, food, SCORE
     #The screen positions go from -SIZE/2 to +SIZE/2
     #But we need to make food pieces only appear on game squares
     #So we cut up the game board into multiples of SQUARE_SIZE.
@@ -140,6 +145,7 @@ def make_food():
     ##3.WRITE YOUR CODE HERE: Add the food turtle's stamp to the food stamps list
 
 def move_snake():
+    global food_stamps, food_pos, SCORE, isGrow
     my_pos = snake.pos()
     x_pos = my_pos[0]
     y_pos = my_pos[1]
@@ -170,9 +176,12 @@ def move_snake():
     ######## SPECIAL PLACE - Remember it for Part 5
     #pop zeroth element in pos_list to get rid of last the last
     #piece of the tail
-    old_stamp = stamp_list.pop(0)
-    snake.clearstamp(old_stamp)
-    pos_list.pop(0)
+    if isGrow == False:
+        old_stamp = stamp_list.pop(0)
+        snake.clearstamp(old_stamp)
+        pos_list.pop(0)
+    else:
+        isGrow = False
 
     #Add new lines to the end of the function
     #Grab position of snake
@@ -183,7 +192,6 @@ def move_snake():
     # right edge.
 
     ######## SPECIAL PLACE - Remember it for Part 5
-    global food_stamps, food_pos, SCORE
     #If snake is on top of food item
     
     if new_x_pos >= RIGHT_EDGE:
@@ -211,12 +219,27 @@ def move_snake():
         make_food()
         SCORE += 1
 
+        isGrow = True
+
     ## Don't eat yourself
-    for i in range(len(pos_list) - 1):
-        if pos_list[-1] == pos_list[i]:
-            quit()
+    a = set(pos_list)
+    if len(pos_list) != len(a):
+        quit()
+
+##    ## Don't eat yourself
+##    for i in range(len(pos_list) - 1):
+##        if pos_list[-1] == pos_list[i]:
+##            quit()
     
     turtle.ontimer(move_snake, TIME_STEP)
+
+def printScore():
+    global SCORE 
+    turtle.goto(-390, 220)
+    turtle.color("lightblue")
+    turtle.clear()
+    turtle.write("Score: " + str(SCORE), False, "left", ("Helvetica", 16, "normal"))
+    turtle.ontimer(printScore, TIME_STEP)
 
 make_food()
 move_snake()
