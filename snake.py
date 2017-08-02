@@ -3,16 +3,10 @@ import random
 
 turtle.tracer(1, 0)
 
-SIZE_X = 800
-SIZE_Y = 500
-
-REAL_SIZE_X = SIZE_X + 60
-REAL_SIZE_Y = SIZE_Y + 60
-
-UP_EDGE = REAL_SIZE_Y / 2
-DOWN_EDGE = -(REAL_SIZE_Y / 2)
-RIGHT_EDGE = REAL_SIZE_X / 2
-LEFT_EDGE = -(REAL_SIZE_X / 2)
+BORDER_SIZE_X = 400
+BORDER_SIZE_Y = 200
+REAL_SIZE_X = 850
+REAL_SIZE_Y = 550
 
 turtle.setup(REAL_SIZE_X, REAL_SIZE_Y)
 turtle.bgcolor("black")
@@ -22,6 +16,11 @@ turtle.penup()
 SQUARE_SIZE = 20
 START_LENGTH = 10
 SCORE = 0
+
+UP_EDGE = (BORDER_SIZE_Y)
+DOWN_EDGE = -(BORDER_SIZE_Y)
+RIGHT_EDGE = (BORDER_SIZE_X)
+LEFT_EDGE = -(BORDER_SIZE_X)
 
 isGrow = False
 
@@ -85,28 +84,24 @@ RIGHT = 3
 direction = UP
 
 def up():
+    global direction #snake direction is global (same everywhere)
     if direction != DOWN:
-        global direction #snake direction is global (same everywhere)
-        direction = UP #Change direction to up
-        print("You pressed the up key!")
-
+        direction = UP #Change direction to 
+        
 def down():
+    global direction #snake direction is global (same everywhere)
     if direction != UP:
-        global direction #snake direction is global (same everywhere)
         direction = DOWN #Change direction to up
-        print("You pressed the down key!")
 
 def left():
+    global direction #snake direction is global (same everywhere)
     if direction != RIGHT:
-        global direction #snake direction is global (same everywhere)
         direction = LEFT #Change direction to up
-        print("You pressed the left key!")
 
 def right():
+    global direction #snake direction is global (same everywhere)
     if direction != LEFT:
-        global direction #snake direction is global (same everywhere)
         direction = RIGHT #Change direction to up
-        print("You pressed the right key!")
 
 
 #2. Make functions down(), left(), and right() that change direction
@@ -122,15 +117,32 @@ food = turtle.clone()
 food.shape("trash.gif")
 turtle.hideturtle()
 
+def createBorder():
+    border = turtle.clone()
+    border.pensize(10)
+    border.color("red")
+    border.goto(BORDER_SIZE_X, BORDER_SIZE_Y)
+    border.pendown()
+    
+    border.goto(BORDER_SIZE_X, -BORDER_SIZE_Y)
+    border.goto(-BORDER_SIZE_X, -BORDER_SIZE_Y)
+    border.goto(-BORDER_SIZE_X, BORDER_SIZE_Y)
+    border.goto(BORDER_SIZE_X, BORDER_SIZE_Y)
+
+    border.fillcolor("blue")
+    
+    border.penup()
+    
 def make_food():
-    global food_stamps, food_pos, food, SCORE
+    global food_stamps, food_pos, food
     #The screen positions go from -SIZE/2 to +SIZE/2
     #But we need to make food pieces only appear on game squares
     #So we cut up the game board into multiples of SQUARE_SIZE.
-    min_x=-int(SIZE_X/2/SQUARE_SIZE)+1
-    max_x=int(SIZE_X/2/SQUARE_SIZE)-1
-    min_y=-int(SIZE_Y/2/SQUARE_SIZE)-1
-    max_y=int(SIZE_Y/2/SQUARE_SIZE)+1
+
+    min_x=-int(BORDER_SIZE_X/SQUARE_SIZE)+1
+    max_x=int(BORDER_SIZE_X/SQUARE_SIZE)-1
+    min_y=-int(BORDER_SIZE_Y/SQUARE_SIZE)+1
+    max_y=int(BORDER_SIZE_Y/SQUARE_SIZE)-1
     #Pick a position that is a random multiple of SQUARE_SIZE
     food_x = random.randint(min_x,max_x)*SQUARE_SIZE
     food_y = random.randint(min_y,max_y)*SQUARE_SIZE
@@ -142,29 +154,24 @@ def make_food():
     ##3.WRITE YOUR CODE HERE: Add the food turtle's stamp to the food stamps list
     foodStamp = food.stamp()
     food_stamps.append(foodStamp)
-    ##3.WRITE YOUR CODE HERE: Add the food turtle's stamp to the food stamps list
 
 def move_snake():
-    global food_stamps, food_pos, SCORE, isGrow
+    global food_stamps, food_pos, isGrow, SCORE
     my_pos = snake.pos()
     x_pos = my_pos[0]
     y_pos = my_pos[1]
     
     if direction == RIGHT:
         snake.goto(x_pos + SQUARE_SIZE, y_pos)
-        print("You moved Right!")
 
     elif direction == LEFT:
         snake.goto(x_pos - SQUARE_SIZE, y_pos)
-        print("You moved Left!")
 
     elif direction == DOWN:
         snake.goto(x_pos, y_pos - SQUARE_SIZE)
-        print("You moved Down!")
 
     elif direction == UP:
         snake.goto(x_pos, y_pos + SQUARE_SIZE)
-        print("You moved Up!")
 
     #Stamp new element and append new stamp in list
     #Remember: The snake position changed - update my_pos()
@@ -175,8 +182,8 @@ def move_snake():
     stamp_list.append(new_stamp)
     ######## SPECIAL PLACE - Remember it for Part 5
     #pop zeroth element in pos_list to get rid of last the last
-    #piece of the tail
     if isGrow == False:
+        #piece of the tail
         old_stamp = stamp_list.pop(0)
         snake.clearstamp(old_stamp)
         pos_list.pop(0)
@@ -188,27 +195,19 @@ def move_snake():
     new_pos = snake.pos()
     new_x_pos = new_pos[0]
     new_y_pos = new_pos[1]
-    # The next three lines check if the snake is hitting the
-    # right edge.
 
-    ######## SPECIAL PLACE - Remember it for Part 5
-    #If snake is on top of food item
-    
     if new_x_pos >= RIGHT_EDGE:
-        print("You hit the right edge! Game over!")
         quit()
 
     elif new_x_pos <= LEFT_EDGE:
-        print("You hit the right edge! Game over!")
         quit()
 
     elif new_y_pos >= UP_EDGE:
-        print("You hit the right edge! Game over!")
         quit()
 
     elif new_y_pos <= DOWN_EDGE:
-        print("You hit the right edge! Game over!")
         quit()
+
 
     if snake.pos() in food_pos:
         food_ind = food_pos.index(snake.pos())
@@ -217,30 +216,29 @@ def move_snake():
         food_pos.pop(food_ind)
         food_stamps.pop(food_ind)
         make_food()
+
         SCORE += 1
 
         isGrow = True
 
-    ## Don't eat yourself
-    a = set(pos_list)
-    if len(pos_list) != len(a):
-        quit()
+        ## stamp_list.append(stamp)
 
-##    ## Don't eat yourself
-##    for i in range(len(pos_list) - 1):
-##        if pos_list[-1] == pos_list[i]:
-##            quit()
+    ## Don't eat yourself
+    for i in range(len(pos_list) - 1):
+        if pos_list[-1] == pos_list[i]:
+            quit()
     
     turtle.ontimer(move_snake, TIME_STEP)
 
 def printScore():
-    global SCORE 
-    turtle.goto(-390, 220)
+    global SCORE
+    turtle.goto(-420, 250)
     turtle.color("lightblue")
     turtle.clear()
-    turtle.write("Score: " + str(SCORE), False, "left", ("Helvetica", 16, "normal"))
+    turtle.write("Score: " + str(SCORE), False, "left", ("Julee", 16, "normal"))
     turtle.ontimer(printScore, TIME_STEP)
 
+createBorder()
 make_food()
 move_snake()
 printScore()
