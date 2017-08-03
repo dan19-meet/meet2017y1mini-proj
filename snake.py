@@ -14,7 +14,7 @@ turtle.bgcolor("black")
 turtle.penup()
 
 SQUARE_SIZE = 20
-START_LENGTH = 10
+START_LENGTH = 1
 SCORE = 0
 
 UP_EDGE = (BORDER_SIZE_Y)
@@ -122,6 +122,7 @@ def createBorder():
     border.pensize(10)
     border.color("grey")
     border.goto(BORDER_SIZE_X, BORDER_SIZE_Y)
+
     border.pendown()
     
     border.goto(BORDER_SIZE_X, -BORDER_SIZE_Y)
@@ -145,15 +146,19 @@ def make_food():
     #Pick a position that is a random multiple of SQUARE_SIZE
     food_x = random.randint(min_x,max_x)*SQUARE_SIZE
     food_y = random.randint(min_y,max_y)*SQUARE_SIZE
-    
-    ##1.WRITE YOUR CODE HERE: Make the food turtle go to the randomly-generated
-    ## position
-    food.goto(food_x, food_y)
-    ##2.WRITE YOUR CODE HERE: Add the food turtle's position to the food positions list
-    food_pos.append(food.pos())
-    ##3.WRITE YOUR CODE HERE: Add the food turtle's stamp to the food stamps list
-    foodStamp = food.stamp()
-    food_stamps.append(foodStamp)
+    foodPos = (food_x, food_y)
+    if foodPos in pos_list:
+        print("Food on body, No!")
+        make_food()
+    else:
+        ##1.WRITE YOUR CODE HERE: Make the food turtle go to the randomly-generated
+        ## position
+        food.goto(food_x, food_y)
+        ##2.WRITE YOUR CODE HERE: Add the food turtle's position to the food positions list
+        food_pos.append(food.pos())
+        ##3.WRITE YOUR CODE HERE: Add the food turtle's stamp to the food stamps list
+        foodStamp = food.stamp()
+        food_stamps.append(foodStamp)
     
 def move_snake():
     global food_stamps, food_pos, isGrow, SCORE
@@ -236,7 +241,7 @@ def printScore():
     turtle.color("lightblue")
     turtle.clear()
     turtle.write("Score: " + str(SCORE), False, "left", ("Julee", 16, "normal"))
-    turtle.ontimer(printScore, TIME_STEP)
+    turtle.ontimer(printScore, 1000)
 
 createBorder()
 make_food()
