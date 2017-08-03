@@ -120,7 +120,7 @@ turtle.hideturtle()
 def createBorder():
     border = turtle.clone()
     border.pensize(10)
-    border.color("red")
+    border.color("grey")
     border.goto(BORDER_SIZE_X, BORDER_SIZE_Y)
     border.pendown()
     
@@ -129,7 +129,6 @@ def createBorder():
     border.goto(-BORDER_SIZE_X, BORDER_SIZE_Y)
     border.goto(BORDER_SIZE_X, BORDER_SIZE_Y)
 
-    border.fillcolor("blue")
     
     border.penup()
     
@@ -146,6 +145,7 @@ def make_food():
     #Pick a position that is a random multiple of SQUARE_SIZE
     food_x = random.randint(min_x,max_x)*SQUARE_SIZE
     food_y = random.randint(min_y,max_y)*SQUARE_SIZE
+    
     ##1.WRITE YOUR CODE HERE: Make the food turtle go to the randomly-generated
     ## position
     food.goto(food_x, food_y)
@@ -154,7 +154,7 @@ def make_food():
     ##3.WRITE YOUR CODE HERE: Add the food turtle's stamp to the food stamps list
     foodStamp = food.stamp()
     food_stamps.append(foodStamp)
-
+    
 def move_snake():
     global food_stamps, food_pos, isGrow, SCORE
     my_pos = snake.pos()
