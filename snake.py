@@ -31,7 +31,7 @@ pos_list = []
 stamp_list = []
 food_pos = []
 food_stamps = []
-
+color_list = ["red", "lightblue", "yellow", "orange", "green", "pink", "brown", "grey", "blue", "purple"]
 # Set u positions (x, y) of boxes that make up the snake
 snake = turtle.clone()
 snake.shape("square")
@@ -120,7 +120,8 @@ turtle.hideturtle()
 def createBorder():
     border = turtle.clone()
     border.pensize(10)
-    border.color("grey")
+    turtle.colormode(255)
+    border.color(221, 54, 67)
     border.goto(BORDER_SIZE_X, BORDER_SIZE_Y)
 
     border.pendown()
@@ -226,6 +227,10 @@ def move_snake():
 
         isGrow = True
 
+        randColor = random.randint(0, len(color_list) - 1)
+        
+        snake.fillcolor(color_list[randColor])
+
         ## stamp_list.append(stamp)
 
     ## Don't eat yourself
@@ -237,7 +242,7 @@ def move_snake():
 
 def printScore():
     global SCORE
-    turtle.goto(-420, 250)
+    turtle.goto(-390, 170)
     turtle.color("lightblue")
     turtle.clear()
     turtle.write("Score: " + str(SCORE), False, "left", ("Julee", 16, "normal"))
